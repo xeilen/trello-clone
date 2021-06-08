@@ -10,6 +10,12 @@
             <span class="w-full flex-no-shrink font-bold">{{ task.name }}</span>
             <p v-if="task.description" class="w-full flex-no-shrink mt-1 text-sm">{{ task.description }}</p>
           </div>
+          <input
+            type="text"
+            placeholder="+ type task"
+            class="block p-2 w-full bg-transparent"
+            @keyup.enter="createTask($event, column.tasks)"
+          >
         </div>
       </div>
     </div>
@@ -38,6 +44,10 @@ export default {
     },
     close () {
       this.$router.push({ name: 'board' })
+    },
+    createTask (e, tasks) {
+      this.$store.dispatch('addTask', { tasks, name: e.target.value })
+      e.target.value = ''
     }
   }
 }

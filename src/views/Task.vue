@@ -1,7 +1,20 @@
 <template>
   <div class="task-view">
     <div class="flex flex-col flex-grow item-start justify-between px-4">
-      {{ task }}
+      <input
+        type="text"
+        :value="task.name"
+        class="p-2 w-full mr-2 block text-xl font-bold"
+        @change="updateTaskProperty($event, 'name')"
+      >
+
+      <textarea
+        :value="task.description"
+        class="relative bg-transparent px-2 border mt-2 h-64 border-none leading-normal"
+        @change="updateTaskProperty($event, 'description')"
+      >
+
+      </textarea>
     </div>
   </div>
 </template>
@@ -14,6 +27,11 @@ export default {
     task () {
       console.log(this.$route.params.id)
       return this.getTask(this.$route.params.id)
+    }
+  },
+  methods: {
+    updateTaskProperty (e, key, task) {
+      this.$store.dispatch('updateTask', { task: this.task, value: e.target.value, key })
     }
   }
 }
