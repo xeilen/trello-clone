@@ -20,7 +20,7 @@
       </div>
     </div>
     <div v-if="isTaskOpen" class="task-bg" @click.self="close">
-      <router-view/>
+      <router-view @test="close"/>
     </div>
   </div>
 </template>

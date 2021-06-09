@@ -12,6 +12,7 @@
         :value="task.description"
         class="relative bg-transparent px-2 border mt-2 h-64 border-none leading-normal"
         @change="updateTaskProperty($event, 'description')"
+        @keydown.enter="closeModal($event, 'description')"
       >
 
       </textarea>
@@ -30,8 +31,20 @@ export default {
     }
   },
   methods: {
-    updateTaskProperty (e, key, task) {
-      this.$store.dispatch('updateTask', { task: this.task, value: e.target.value, key })
+    updateTaskProperty (e, key) {
+      console.log('change')
+      this.$store.dispatch('updateTask', {
+        task: this.task,
+        value: e.target.value,
+        key
+      })
+    },
+    async closeModal (e, key) {
+      if (e.ctrlKey || e.onmousedown) {
+        await this.updateTaskProperty(e, key)
+        this.$emit('test')
+        // this.$router.push({ name: 'board' })
+      }
     }
   }
 }
