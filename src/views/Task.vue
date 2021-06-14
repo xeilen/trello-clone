@@ -26,13 +26,13 @@ export default {
   computed: {
     ...mapGetters(['getTask']),
     task () {
-      console.log(this.$route.params.id)
+      // console.log(this.$route.params.id)
       return this.getTask(this.$route.params.id)
     }
   },
   methods: {
     updateTaskProperty (e, key) {
-      console.log('change')
+      // console.log('change')
       this.$store.dispatch('updateTask', {
         task: this.task,
         value: e.target.value,

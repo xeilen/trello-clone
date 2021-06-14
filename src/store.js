@@ -21,10 +21,21 @@ export default new Vuex.Store({
       })
     },
     UPDATE_TASK (state, { task, key, value }) {
-      console.log(task, 'task in store')
+      // console.log(task, 'task in store')
       if (task) {
         task[key] = value
       }
+    },
+    MOVE_TASK (state, { fromTasks, toTasks, fromTaskIndex, toTaskIndex }) {
+      const taskToMove = fromTasks.splice(fromTaskIndex, 1)[0]
+      console.log(taskToMove)
+      toTasks.splice(toTaskIndex, 0, taskToMove)
+    },
+    MOVE_COLUMN (state, { fromColumnIndex, toColumnIndex }) {
+      const columnList = state.board.columns
+      const columnToMove = columnList.splice(fromColumnIndex, 1)[0]
+      columnList.splice(toColumnIndex, 0, columnToMove)
+      console.log(columnList)
     }
   },
   actions: {
@@ -33,6 +44,12 @@ export default new Vuex.Store({
     },
     updateTask ({ commit }, { task, value, key }) {
       commit('UPDATE_TASK', { task, value, key })
+    },
+    moveTask ({ commit }, { fromTasks, toTasks, fromTaskIndex, toTaskIndex }) {
+      commit('MOVE_TASK', { fromTasks, toTasks, fromTaskIndex, toTaskIndex })
+    },
+    moveColumn ({ commit }, { fromColumnIndex, toColumnIndex }) {
+      commit('MOVE_COLUMN', { fromColumnIndex, toColumnIndex })
     }
   },
   getters: {
