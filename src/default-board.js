@@ -10,19 +10,22 @@ export default {
           description: 'Some example description',
           name: 'first task',
           id: 5,
-          userAssigned: null
+          userAssigned: null,
+          checked: false
         },
         {
           description: '',
           name: 'second task',
           id: '2',
-          userAssigned: null
+          userAssigned: null,
+          checked: false
         },
         {
           description: '',
           name: 'and thrid',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          checked: false
         }
       ]
     },
@@ -33,7 +36,8 @@ export default {
           description: '',
           name: 'first task',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          checked: false
         }
       ]
     },
@@ -44,7 +48,8 @@ export default {
           description: '',
           name: 'first task',
           id: uuid(),
-          userAssigned: null
+          userAssigned: null,
+          checked: false
         }
       ]
     }

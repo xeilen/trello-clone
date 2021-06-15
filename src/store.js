@@ -17,7 +17,8 @@ export default new Vuex.Store({
       tasks.push({
         name,
         id: uuid(),
-        description: ''
+        description: '',
+        checked: false
       })
     },
     UPDATE_TASK (state, { task, key, value }) {
@@ -26,10 +27,19 @@ export default new Vuex.Store({
         task[key] = value
       }
     },
-    MOVE_TASK (state, { fromTasks, toTasks, fromTaskIndex, toTaskIndex }) {
-      const taskToMove = fromTasks.splice(fromTaskIndex, 1)[0]
-      console.log(taskToMove)
-      toTasks.splice(toTaskIndex, 0, taskToMove)
+    MOVE_TASK (state, { fromTasks, toTasks, fromTaskIndex, toTaskIndex, isChecked }) {
+      console.log(fromTasks)
+      if (isChecked) {
+        const tasksToMove = fromTasks.filter(task => task.checked)
+        fromTasks = fromTasks.filter(task => !task.checked)
+        console.log(fromTasks)
+        console.log(...tasksToMove)
+        toTasks.splice(toTaskIndex, 0, ...tasksToMove)
+      } else {
+        const taskToMove = fromTasks.splice(fromTaskIndex, 1)
+        console.log(...taskToMove)
+        toTasks.splice(toTaskIndex, 0, ...taskToMove)
+      }
     },
     MOVE_COLUMN (state, { fromColumnIndex, toColumnIndex }) {
       const columnList = state.board.columns
@@ -43,10 +53,11 @@ export default new Vuex.Store({
       commit('CREATE_TASK', { tasks, name })
     },
     updateTask ({ commit }, { task, value, key }) {
+      console.log('up')
       commit('UPDATE_TASK', { task, value, key })
     },
-    moveTask ({ commit }, { fromTasks, toTasks, fromTaskIndex, toTaskIndex }) {
-      commit('MOVE_TASK', { fromTasks, toTasks, fromTaskIndex, toTaskIndex })
+    moveTask ({ commit }, { fromTasks, toTasks, fromTaskIndex, toTaskIndex, isChecked }) {
+      commit('MOVE_TASK', { fromTasks, toTasks, fromTaskIndex, toTaskIndex, isChecked })
     },
     moveColumn ({ commit }, { fromColumnIndex, toColumnIndex }) {
       commit('MOVE_COLUMN', { fromColumnIndex, toColumnIndex })

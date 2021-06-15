@@ -19,15 +19,29 @@
             class="task"
             v-for="(task, taskIndex) in column.tasks"
             :key="task.id"
-            @click="goToTask(task)"
-            draggable
+            :draggable="true"
             @dragover.prevent
             @dragenter.prevent
             @drop.stop="moveTaskOrColumn($event, column.tasks, columnIndex, taskIndex )"
-            @dragstart="pickupTask($event, taskIndex, columnIndex)"
+            @dragstart="pickupTask($event, taskIndex, columnIndex, task.checked)"
           >
-            <span class="w-full flex-no-shrink font-bold">{{ task.name }}</span>
-            <p v-if="task.description" class="w-full flex-no-shrink mt-1 text-sm">{{ task.description }}</p>
+            <span
+              class="w-full font-bold"
+              @click.self="goToTask(task)"
+            >
+              {{ task.name }}
+              <input
+                type="checkbox"
+                :checked="task.checked"
+                @change="updateCheckedStatus($event, 'checked', task.id)"
+              >
+            </span>
+            <p
+              v-if="task.description"
+              class="w-full flex-no-shrink mt-1 text-sm"
+            >
+              {{ task.description }}
+            </p>
           </div>
           <input
             type="text"
@@ -61,6 +75,14 @@ export default {
         name: 'task', params: { id: task.id }
       })
     },
+    updateCheckedStatus (e, key, taskId) {
+      console.log(e.target.checked)
+      this.$store.dispatch('updateTask', {
+        task: this.$store.getters.getTask(taskId),
+        value: e.target.checked,
+        key
+      })
+    },
     close () {
       this.$router.push({ name: 'board' })
     },
@@ -68,7 +90,7 @@ export default {
       this.$store.dispatch('addTask', { tasks, name: e.target.value })
       e.target.value = ''
     },
-    pickupTask (e, taskIndex, fromColumnIndex) {
+    pickupTask (e, taskIndex, fromColumnIndex, isChecked) {
       // console.log(taskIndex)
       // console.log(fromColumnIndex)
       e.dataTransfer.effectAllowed = 'move'
@@ -77,17 +99,25 @@ export default {
       e.dataTransfer.setData('from-task-index', taskIndex)
       e.dataTransfer.setData('from-column-index', fromColumnIndex)
       e.dataTransfer.setData('type', 'task')
+      e.dataTransfer.setData('is-checked', isChecked)
     },
     moveTask (e, toTasks, toTaskIndex) {
+      const isChecked = JSON.parse(e.dataTransfer.getData('is-checked'))
+      console.log(isChecked)
       const fromColumnIndex = e.dataTransfer.getData('from-column-index')
       const fromTasks = this.board.columns[fromColumnIndex].tasks
       const fromTaskIndex = e.dataTransfer.getData('from-task-index')
+
+      // if (isChecked) {
+      //   const tasksToMove = fromTasks.filter(task => task.checked)
+      // }
 
       this.$store.dispatch('moveTask', {
         fromTasks,
         toTasks,
         fromTaskIndex,
-        toTaskIndex
+        toTaskIndex,
+        isChecked: isChecked
       })
     },
     pickupColumn (e, fromColumnIndex) {
