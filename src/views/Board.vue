@@ -91,8 +91,6 @@ export default {
       e.target.value = ''
     },
     pickupTask (e, taskIndex, fromColumnIndex, isChecked) {
-      // console.log(taskIndex)
-      // console.log(fromColumnIndex)
       e.dataTransfer.effectAllowed = 'move'
       e.dataTransfer.dropEffect = 'move'
 
@@ -107,10 +105,6 @@ export default {
       const fromColumnIndex = e.dataTransfer.getData('from-column-index')
       const fromTasks = this.board.columns[fromColumnIndex].tasks
       const fromTaskIndex = e.dataTransfer.getData('from-task-index')
-
-      // if (isChecked) {
-      //   const tasksToMove = fromTasks.filter(task => task.checked)
-      // }
 
       this.$store.dispatch('moveTask', {
         fromTasks,

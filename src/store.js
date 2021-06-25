@@ -28,13 +28,21 @@ export default new Vuex.Store({
       }
     },
     MOVE_TASK (state, { fromTasks, toTasks, fromTaskIndex, toTaskIndex, isChecked }) {
-      console.log(fromTasks)
+
       if (isChecked) {
-        const tasksToMove = fromTasks.filter(task => task.checked)
-        fromTasks = fromTasks.filter(task => !task.checked)
-        console.log(fromTasks)
-        console.log(...tasksToMove)
-        toTasks.splice(toTaskIndex, 0, ...tasksToMove)
+        if (fromTasks !== toTasks) {
+          const tasksToMove = fromTasks.filter(task => task.checked)
+          toTasks.splice(toTaskIndex, 0, ...tasksToMove)
+          fromTasks
+            .map((task, inx) => task.checked ? inx : null)
+            .filter(item => item !== null)
+            .forEach((item, inx) => {
+              fromTasks.splice(item - inx, 1)
+            })
+          tasksToMove.forEach(item => {
+            item.checked = !item.checked
+          })
+        }
       } else {
         const taskToMove = fromTasks.splice(fromTaskIndex, 1)
         console.log(...taskToMove)
