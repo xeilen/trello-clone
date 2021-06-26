@@ -21,6 +21,12 @@ export default new Vuex.Store({
         checked: false
       })
     },
+    CREATE_COLUMN (state, { name }) {
+      state.board.columns.push({
+        name,
+        tasks: []
+      })
+    },
     UPDATE_TASK (state, { task, key, value }) {
       // console.log(task, 'task in store')
       if (task) {
@@ -28,7 +34,6 @@ export default new Vuex.Store({
       }
     },
     MOVE_TASK (state, { fromTasks, toTasks, fromTaskIndex, toTaskIndex, isChecked }) {
-
       if (isChecked) {
         if (fromTasks !== toTasks) {
           const tasksToMove = fromTasks.filter(task => task.checked)
@@ -59,6 +64,9 @@ export default new Vuex.Store({
   actions: {
     addTask ({ commit }, { tasks, name }) {
       commit('CREATE_TASK', { tasks, name })
+    },
+    addColumn({ commit }, { name }) {
+      commit('CREATE_COLUMN', { name })
     },
     updateTask ({ commit }, { task, value, key }) {
       console.log('up')
