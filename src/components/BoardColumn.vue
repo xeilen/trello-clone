@@ -11,34 +11,14 @@
       {{ column.name }}
     </div>
     <div class="list-reset">
-      <div
-        class="task"
+      <TaskInColumn
         v-for="(task, taskIndex) in column.tasks"
         :key="task.id"
-        :draggable="true"
-        @dragover.prevent
-        @dragenter.prevent
-        @drop.stop="moveTaskOrColumn($event, column.tasks, columnIndex, taskIndex )"
-        @dragstart="pickupTask($event, taskIndex, columnIndex, task.checked)"
-      >
-            <span
-              class="w-full font-bold"
-              @click.self="goToTask(task)"
-            >
-              {{ task.name }}
-              <input
-                type="checkbox"
-                :checked="task.checked"
-                @change="updateCheckedStatus($event, 'checked', task.id)"
-              >
-            </span>
-        <p
-          v-if="task.description"
-          class="w-full flex-no-shrink mt-1 text-sm"
-        >
-          {{ task.description }}
-        </p>
-      </div>
+        :taskIndex="taskIndex"
+        :columnIndex="columnIndex"
+        :task="task"
+        :column="column"
+      />
       <input
         type="text"
         placeholder="+ type task"
@@ -50,11 +30,12 @@
 </template>
 
 <script>
-// todo create column task component and do some refactoring
 import { mapState } from 'vuex'
+import TaskInColumn from './TaskInColumn'
 
 export default {
   name: 'BoardColumn',
+  components: { TaskInColumn },
   props: {
     column: {
       type: Object
@@ -67,14 +48,11 @@ export default {
     ...mapState(['board'])
   },
   methods: {
-    goToTask (task) {
-      this.$router.push({
-        name: 'task', params: { id: task.id }
-      })
-    },
     createTask (e, tasks) {
-      this.$store.dispatch('addTask', { tasks, name: e.target.value })
-      e.target.value = ''
+      if (e.target.value.length) {
+        this.$store.dispatch('addTask', { tasks, name: e.target.value })
+        e.target.value = ''
+      }
     },
     moveTask (e, toTasks, toTaskIndex) {
       const isChecked = JSON.parse(e.dataTransfer.getData('is-checked'))
@@ -99,28 +77,12 @@ export default {
         toColumnIndex
       })
     },
-    pickupTask (e, taskIndex, fromColumnIndex, isChecked) {
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.dropEffect = 'move'
-
-      e.dataTransfer.setData('from-task-index', taskIndex)
-      e.dataTransfer.setData('from-column-index', fromColumnIndex)
-      e.dataTransfer.setData('type', 'task')
-      e.dataTransfer.setData('is-checked', isChecked)
-    },
     pickupColumn (e, fromColumnIndex) {
       e.dataTransfer.effectAllowed = 'move'
       e.dataTransfer.dropEffect = 'move'
 
       e.dataTransfer.setData('from-column-index', fromColumnIndex)
       e.dataTransfer.setData('type', 'column')
-    },
-    updateCheckedStatus (e, key, taskId) {
-      this.$store.dispatch('updateTask', {
-        task: this.$store.getters.getTask(taskId),
-        value: e.target.checked,
-        key
-      })
     },
     moveTaskOrColumn (e, toTasks, toColumnIndex, toTaskIndex) {
       const type = e.dataTransfer.getData('type')
@@ -139,8 +101,5 @@ export default {
 .column {
   @apply bg-grey-light p-2 mr-4 text-left shadow rounded;
   min-width: 350px;
-}
-.task {
-  @apply flex items-center flex-wrap shadow mb-2 py-2 px-2 rounded bg-white text-grey-darkest no-underline;
 }
 </style>

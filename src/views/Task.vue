@@ -14,7 +14,6 @@
         @change="updateTaskProperty($event, 'description')"
         @keydown.enter="closeModal($event, 'description')"
       >
-
       </textarea>
     </div>
   </div>
@@ -26,7 +25,6 @@ export default {
   computed: {
     ...mapGetters(['getTask']),
     task () {
-      // console.log(this.$route.params.id)
       return this.getTask(this.$route.params.id)
     }
   },
