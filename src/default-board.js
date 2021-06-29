@@ -9,7 +9,7 @@ export default {
         {
           description: 'Some example description',
           name: 'first task',
-          id: 5,
+          id: '5',
           userAssigned: null,
           checked: false
         },

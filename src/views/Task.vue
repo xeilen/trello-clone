@@ -25,21 +25,21 @@ export default {
   computed: {
     ...mapGetters(['getTask']),
     task () {
+      console.log(this.$route.params.id)
       return this.getTask(this.$route.params.id)
     }
   },
   methods: {
     updateTaskProperty (e, key) {
-      // console.log('change')
       this.$store.dispatch('updateTask', {
         task: this.task,
         value: e.target.value,
         key
       })
     },
-    async closeModal (e, key) {
+    closeModal (e, key) {
       if (e.ctrlKey || e.onmousedown) {
-        await this.updateTaskProperty(e, key)
+        this.updateTaskProperty(e, key)
         this.$emit('test')
         // this.$router.push({ name: 'board' })
       }

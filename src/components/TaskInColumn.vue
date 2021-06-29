@@ -6,16 +6,16 @@
     @dragenter.prevent
     @drop.stop="moveTaskOrColumn($event, column.tasks, columnIndex, taskIndex )"
     @dragstart="pickupTask($event, taskIndex, columnIndex, task.checked)"
+    @click="goToTask(task)"
   >
     <span
       class="w-full font-bold"
-      @click.self="goToTask(task)"
     >
       {{ task.name }}
       <input
         type="checkbox"
         :checked="task.checked"
-        @change="updateCheckedStatus($event, 'checked', task.id)"
+        @click.stop="updateCheckedStatus($event, 'checked', task.id)"
       >
     </span>
     <p
