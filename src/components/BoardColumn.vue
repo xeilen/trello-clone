@@ -32,9 +32,11 @@
 <script>
 import { mapState } from 'vuex'
 import TaskInColumn from './TaskInColumn'
+import moveTaskOrColumnMixin from '../mixins/moveTaskOrColumnMixin'
 
 export default {
   name: 'BoardColumn',
+  mixins: [moveTaskOrColumnMixin],
   components: { TaskInColumn },
   props: {
     column: {
@@ -54,44 +56,12 @@ export default {
         e.target.value = ''
       }
     },
-    moveTask (e, toTasks, toTaskIndex) {
-      const isChecked = JSON.parse(e.dataTransfer.getData('is-checked'))
-      console.log(isChecked)
-      const fromColumnIndex = e.dataTransfer.getData('from-column-index')
-      const fromTasks = this.board.columns[fromColumnIndex].tasks
-      const fromTaskIndex = e.dataTransfer.getData('from-task-index')
-
-      this.$store.dispatch('moveTask', {
-        fromTasks,
-        toTasks,
-        fromTaskIndex,
-        toTaskIndex,
-        isChecked: isChecked
-      })
-    },
-    moveColumn (e, toColumnIndex) {
-      const fromColumnIndex = e.dataTransfer.getData('from-column-index')
-
-      this.$store.dispatch('moveColumn', {
-        fromColumnIndex,
-        toColumnIndex
-      })
-    },
     pickupColumn (e, fromColumnIndex) {
       e.dataTransfer.effectAllowed = 'move'
       e.dataTransfer.dropEffect = 'move'
 
       e.dataTransfer.setData('from-column-index', fromColumnIndex)
       e.dataTransfer.setData('type', 'column')
-    },
-    moveTaskOrColumn (e, toTasks, toColumnIndex, toTaskIndex) {
-      const type = e.dataTransfer.getData('type')
-      if (type === 'task') {
-        this.moveTask(e, toTasks, toTaskIndex !== undefined ? toTaskIndex : toTasks.length)
-      }
-      if (type === 'column') {
-        this.moveColumn(e, toColumnIndex)
-      }
     }
   }
 }
